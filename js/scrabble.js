@@ -35,3 +35,28 @@ ScrabbleTiles["X"] = { "value" : 8,  "original-distribution" : 1,  "number-remai
 ScrabbleTiles["Y"] = { "value" : 4,  "original-distribution" : 2,  "number-remaining" : 2  } ;
 ScrabbleTiles["Z"] = { "value" : 10, "original-distribution" : 1,  "number-remaining" : 1  } ;
 ScrabbleTiles["_"] = { "value" : 0,  "original-distribution" : 2,  "number-remaining" : 2  } ;
+
+//data structure for scrabble board heavily based off of examply by Yong Cho 2015
+scrabble_board = [];
+scrabble_board[0] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+scrabble_board[1] = {"letter_double": 1, "word_double": 2, "image": "graphics/double_word_score.png"};
+scrabble_board[2] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+scrabble_board[3] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+scrabble_board[4] = {"letter_double": 2, "word_double": 1, "image": "graphics/double_letter_score.png"};
+scrabble_board[5] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+scrabble_board[6] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_word_score.png"};
+scrabble_board[7] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+scrabble_board[8] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+scrabble_board[9] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_letter_score.png"};
+scrabble_board[10] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png"};
+
+//draws board
+$().ready(function() {
+    for(i = 0; i < scrabble_board.length; i++) {
+        console.log("image " + i + " added to board");
+        var board_slot = $("<img>", {
+            src: scrabble_board[i].image,
+            alt: "board slot #" + i});
+        $("#board").append(board_slot);
+    }    
+})

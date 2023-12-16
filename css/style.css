@@ -12,6 +12,19 @@
 
 #scoreboard{
     justify-content: space-between;
-    margin-left: 25%;
-    margin-right: 25%;
+    margin: 3% auto 1% auto;
+    width: 35%;
+    border-bottom: 1px rebeccapurple solid;
+}
+
+#board{
+    text-align: center;
+    margin: auto;
+    width: 60%;
+}
+
+#buttons{
+
+    margin: 5% auto auto auto;
+    width:fit-content;
 }
