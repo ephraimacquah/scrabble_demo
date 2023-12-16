@@ -1,0 +1,17 @@
+#title{
+    text-align: center;
+}
+
+.col{
+    display: flex;
+}
+
+.label{
+    margin-right: 5px;
+}
+
+#scoreboard{
+    justify-content: space-between;
+    margin-left: 25%;
+    margin-right: 25%;
+}
