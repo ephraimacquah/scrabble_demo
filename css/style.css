@@ -13,18 +13,29 @@
 #scoreboard{
     justify-content: space-between;
     margin: 3% auto 1% auto;
-    width: 35%;
+    width: 40%;
     border-bottom: 1px rebeccapurple solid;
 }
 
 #board{
     text-align: center;
     margin: auto;
-    width: 60%;
+    width: fit-content;
+    white-space: nowrap;
 }
 
 #buttons{
-
     margin: 5% auto auto auto;
     width:fit-content;
+}
+
+#tile_rack{
+    background-image: url("../graphics/scrabble-tile-holder-406774_640.png");
+    background-repeat: no-repeat;
+    margin: 10px auto auto auto;
+    width: 600px;
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

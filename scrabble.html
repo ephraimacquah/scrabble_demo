@@ -1,56 +1,57 @@
 <!DOCTYPE html>
-<html lang = "en"></html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang = "en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    
-    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
-    <script src = "https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="js/scrabble.js"></script>
-    <title>One Line Scrabble Demo</title>
-</head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+        
+        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+        <script src = "https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+        <script src="js/scrabble.js"></script>
+        <title>One Line Scrabble Demo</title>
+    </head>
 
-<body>
-    <h1 id="title">One Line Scrabble Demo</h1>
-    <div id="content_area" class="container-fluid">
+    <body>
+        <h1 id="title">One Line Scrabble Demo</h1>
+        <div id="content_area" class="container-fluid">
 
-        <div id="scoreboard" class="row">
-            <div class="col">
-                <div class="label">Word:</div>
-                <div id="word"></div>
+            <div id="scoreboard" class="row">
+                <div class="col">
+                    <div class="label">Word:</div>
+                    <div id="word"></div>
+                </div>
+                <div class="col">
+                    <div class="label">Score: </div>
+                    <div id="score"></div>
+                </div>
+                <div class="col">
+                    <div class="label">Tiles Remaining: </div>
+                    <div id="tiles_remaining"></div>
+                </div>
             </div>
-            <div class="col">
-                <div class="label">Score: </div>
-                <div id="score"></div>
+
+            <div id="board"></div>
+
+            <div id="buttons">
+                <button type="button" class="btn btn-secondary" id="submit_word" onclick="submit_word()">Submit Word</button>
+                <button type="button" class="btn btn-secondary" id="start_over" onclick="start_over()">Start Over</button>
             </div>
-            <div class="col">
-                <div class="label">Tiles Remaining: </div>
-                <div id="tiles_remaining"></div>
+
+            <div id="tile_rack">
+                <div id="slot1"></div>
+                <div id="slot2"></div>
+                <div id="slot3"></div>
+                <div id="slot4"></div>
+                <div id="slot5"></div>
+                <div id="slot6"></div>
+                <div id="slot7"></div>
             </div>
+
         </div>
-
-        <div id="board"></div>
-
-        <div id="buttons">
-            <button type="button" class="btn btn-secondary" id="submit_word" onclick="submit_word()">Submit Word</button>
-            <button type="button" class="btn btn-secondary" id="start_over" onclick="start_over()">Start Over</button>
-        </div>
-
-        <div id="tile_rack">
-            <div id="tile1"></div>
-            <div id="tile2"></div>
-            <div id="tile3"></div>
-            <div id="tile4"></div>
-            <div id="tile5"></div>
-            <div id="tile6"></div>
-            <div id="tile7"></div>
-        </div>
-
-    </div>
-</body>
+    </body>
+</html>
