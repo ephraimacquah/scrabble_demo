@@ -38,17 +38,17 @@ ScrabbleTiles["_"] = { "value" : 0,  "original-distribution" : 2,  "number-remai
 
 //data structure for scrabble board heavily based off of examply by Yong Cho 2015
 scrabble_board = [];
-scrabble_board[0] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
-scrabble_board[1] = {"letter_double": 1, "word_double": 2, "image": "graphics/double_word_score.png", "occupied": false};
-scrabble_board[2] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
-scrabble_board[3] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
-scrabble_board[4] = {"letter_double": 2, "word_double": 1, "image": "graphics/double_letter_score.png", "occupied": false};
-scrabble_board[5] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
-scrabble_board[6] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_word_score.png", "occupied": false};
-scrabble_board[7] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
-scrabble_board[8] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
-scrabble_board[9] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_letter_score.png", "occupied": false};
-scrabble_board[10] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false};
+scrabble_board[0] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
+scrabble_board[1] = {"letter_double": 1, "word_double": 2, "image": "graphics/double_word_score.png", "occupied": false, "letter": ""};
+scrabble_board[2] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
+scrabble_board[3] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
+scrabble_board[4] = {"letter_double": 2, "word_double": 1, "image": "graphics/double_letter_score.png", "occupied": false, "letter": ""};
+scrabble_board[5] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
+scrabble_board[6] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_word_score.png", "occupied": false, "letter": ""};
+scrabble_board[7] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
+scrabble_board[8] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
+scrabble_board[9] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_letter_score.png", "occupied": false, "letter": ""};
+scrabble_board[10] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
 
 //data structure for tile rack
 tile_rack = []
@@ -69,7 +69,7 @@ get_word = function(){
 
 }
 
-calculate_score = function(tile){
+calculate_score = function(){
 
 }
 
@@ -135,8 +135,7 @@ display_tiles = function(){
             class: "in_rack"
         });
 
-        tile.draggable({revert: "invalid",
-                        helper: "clone"});
+        tile.draggable({revert: "invalid"});
 
         slot.append(tile);
         tile_rack[i] = {"tile_id": char, "occupied": true};
@@ -180,6 +179,8 @@ $().ready(function() {
             return (scrabble_board[index].occupied == false);
         },
         drop: function(event, ui){
+            index = $(this).attr("id");
+            tile_rack[index].occupied = false; 
             ui.draggable.removeClass("in_rack");
             ui.draggable.addClass("on_board");
             $(ui.draggable).css("top", "-1px");
@@ -192,7 +193,8 @@ $().ready(function() {
     $(".rack_slot").droppable({
         accept: function(){
             index = $(this).attr("id")[4];
-            return (scrabble_board[index].occupied == false);
+            console.log(index);
+            return (tile_rack[index].occupied == false);
         }, 
         drop: function(event, ui){
             ui.draggable.removeClass("on_board");
