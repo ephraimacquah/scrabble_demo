@@ -45,7 +45,7 @@ scrabble_board[9] = {"letter_double": 1, "word_double": 1, "image": "graphics/do
 scrabble_board[10] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
 
 //data structure for tile rack to be filled by display_tiles()/update_tile_rack()
-tile_rack = []
+tile_rack = [];
 
 //global total score
 var total_score = 0;
@@ -93,16 +93,19 @@ get_word = function(){
             word += scrabble_board[i].letter;
         }
     }
-    return word
+    return word;
 }
 
 //returns current score for tiles on game board
 calculate_score = function(word){
     var score = 0, word_multiply = 1, letter;
     word = word.trim();
+    if(word.length == 1) {
+        return "-";
+    }
     for(var i = 0; i < word.length; i++) {
         if(word[i] == " ") {
-            return "-"
+            return "-";
         }
         letter = word[i];
         score += ScrabbleTiles[letter]["value"] * scrabble_board[i].letter_double;
@@ -334,7 +337,7 @@ $().ready(function() {
                 display_scoreboard_info();
             }
          },
-         tolerance: "touch"
+         tolerance: "pointer"
     });
     
     //handles dropping tiles into the rack
@@ -374,7 +377,7 @@ $().ready(function() {
                 display_scoreboard_info();
             }
         },
-        tolerance: "touch"
+        tolerance: "pointer"
     });
 
     
