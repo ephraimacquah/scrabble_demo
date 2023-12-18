@@ -36,6 +36,7 @@ ScrabbleTiles["Y"] = { "value" : 4,  "original-distribution" : 2,  "number-remai
 ScrabbleTiles["Z"] = { "value" : 10, "original-distribution" : 1,  "number-remaining" : 1, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_Z.jpg"  } ;
 ScrabbleTiles["_"] = { "value" : 0,  "original-distribution" : 2,  "number-remaining" : 2, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_Blank.jpg"  } ;
 
+var allTiles = [];
 //data structure for scrabble board heavily based off of examply by Yong Cho 2015
 scrabble_board = [];
 scrabble_board[0] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
@@ -53,29 +54,68 @@ scrabble_board[10] = {"letter_double": 1, "word_double": 1, "image": "graphics/d
 //data structure for tile rack
 tile_rack = []
 
+//global total score
+var total_score = 0;
+
+
+get_board_slot_from_letter = function(letter) {
+    for(i = 0; i < scrabble_board.length; i++) {
+        if (letter == scrabble_board[i].letter) {
+            return i;
+        }
+    }
+    return false;
+}
+
+get_rack_slot_from_letter = function(letter) {
+    for(i = 0; i < tile_rack.length; i++) {
+        if (letter == tile_rack[i].tile_id) {
+            return i;
+        }
+    } 
+    return false;
+}
+
 get_scrabble_tile_index = function(index){
     var char;
     //code converts from i to actual character and uses evaluated char to index array
     //code snippet from https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/Scrabble_Pieces_AssociativeArray_Jesse_Test.html javascript source
-    if ( index < Object.keys( ScrabbleTiles ).length - 1 ) {
-        char = String.fromCharCode(65 + i) ;
-    } else if ( index < Object.keys( ScrabbleTiles ).length ) {
+    if ( index < Object.keys(ScrabbleTiles).length - 1) {
+        char = String.fromCharCode(65 + index) ;
+    } else if ( index < Object.keys(ScrabbleTiles).length) {
         char = "_" ;
     }
     return char;
 }
 
 get_word = function(){
-
+    var word = "";
+    for(i = 0; i < scrabble_board.length; i++) {
+        if(scrabble_board[i].letter == "") {
+            word += " ";
+        } else {
+            word += scrabble_board[i].letter;
+        }
+    }
+    return word
 }
 
-calculate_score = function(){
-
+calculate_score = function(word){
+    var score = 0, word_multiply = 1;
+    word = word.trim();
+    for(i = 0; i < word.length; i++) {
+        if(word[i] == " ") {
+            return "-"
+        }
+        letter = word[i];
+        score += ScrabbleTiles[letter]["value"] * scrabble_board[i].letter_double;
+        word_multiply *= scrabble_board[i].word_double;
+    }
+    return score * word_multiply;
 }
 
 get_tiles_remaining = function(){
     tr = 0;
-
     for(i = 0; i < Object.keys(ScrabbleTiles).length; i++) {
         char = get_scrabble_tile_index(i);
         tr += ScrabbleTiles[char]["number-remaining"];
@@ -87,14 +127,18 @@ get_tiles_remaining = function(){
 display_scoreboard_info = function() {
     var word = $("#word");
     var score = $("#score");
+    var total = $("#total")
     var tiles_remaining = $("#tiles_remaining");
 
-    word.text(get_word());
-    score.text(calculate_score());
+    curr_word = get_word();
+    word.text(curr_word);
+    score.text(calculate_score(curr_word));
+    total.text(total_score);
     tiles_remaining.text(get_tiles_remaining());
 
     word.css({"font": "bold"});
     score.css({"font": "bold"});
+    total.css({"font": "bold"});
     tiles_remaining.css({"font": "bold"});
 }
 
@@ -105,10 +149,23 @@ get_random_index = function(min, max){
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
+//handles cleanup of old board and tiles
+clear_board = function(){
+    
+}
+
 //handles when submit word button is pressed
 //removes used tiles from tiles structure and provides 7 new tiles
 submit_word = function(){
-
+    if(calculate_score(get_word()) == "-" || calculate_score(get_word()) == 0) {
+        return;
+    }
+    total_score += Number($("#score").text());
+    $("#total").text(total_score);
+    clear_board();
+    draw_board();
+    display_tiles();
+    display_scoreboard_info();
 }
 
 //clears scoreboard and puts all tiles back into tiles structure
@@ -180,12 +237,30 @@ $().ready(function() {
         },
         drop: function(event, ui){
             index = $(this).attr("id");
-            tile_rack[index].occupied = false; 
-            ui.draggable.removeClass("in_rack");
-            ui.draggable.addClass("on_board");
-            $(ui.draggable).css("top", "-1px");
-            $(ui.draggable).css("left", "");
-            $(this).append(ui.draggable);
+            if(ui.draggable.hasClass("on_board")) {
+                $(ui.draggable).css("top", "");
+                $(ui.draggable).css("left", "");
+                previous_slot = ui.helper.parent().attr("id");
+                $(this).append(ui.draggable);
+                id = ui.helper.attr("id");
+                scrabble_board[previous_slot].occupied = false;
+                scrabble_board[previous_slot].letter = "";
+                scrabble_board[index].occupied = true;
+                scrabble_board[index].letter = id;
+                display_scoreboard_info(); 
+            } else {
+                ui.draggable.removeClass("in_rack");
+                ui.draggable.addClass("on_board");
+                $(ui.draggable).css("top", "");
+                $(ui.draggable).css("left", "");
+                $(this).append(ui.draggable);
+                id = ui.helper.attr("id");
+                rack_num = get_rack_slot_from_letter(id);
+                tile_rack[rack_num].occupied = false;
+                scrabble_board[index].occupied = true;
+                scrabble_board[index].letter = id;
+                display_scoreboard_info();
+            }
          },
          tolerance: "touch"
     });
@@ -193,16 +268,35 @@ $().ready(function() {
     $(".rack_slot").droppable({
         accept: function(){
             index = $(this).attr("id")[4];
-            console.log(index);
-            return (tile_rack[index].occupied == false);
+            //offset by 1 to accomodate naming convention
+            return (tile_rack[index - 1].occupied == false);
         }, 
         drop: function(event, ui){
-            ui.draggable.removeClass("on_board");
-            ui.draggable.addClass("in_rack");
-            $(ui.draggable).css("top", "-1px");
-            $(ui.draggable).css("left", "");
-            $(this).append(ui.draggable);
-            $(this).addClass("occupied");
+            index = $(this).attr("id")[4];
+            if(ui.draggable.hasClass("in_rack")) {
+                $(ui.draggable).css("top", "");
+                $(ui.draggable).css("left", "");
+                previous_slot = ui.helper.parent().attr("id") [4];
+                $(this).append(ui.draggable);
+                id = ui.helper.attr("id");
+                tile_rack[previous_slot].occupied = false;
+                tile_rack[previous_slot].letter = "";
+                tile_rack[index].occupied = true;
+                tile_rack[index].letter = id;
+                display_scoreboard_info(); 
+            } else {
+                ui.draggable.removeClass("on_board");
+                ui.draggable.addClass("in_rack");
+                $(ui.draggable).css("top", "");
+                $(ui.draggable).css("left", "");
+                $(this).append(ui.draggable);
+                id = ui.helper.attr("id");
+                board_num = get_board_slot_from_letter(id)
+                tile_rack[index].occupied = true;
+                scrabble_board[board_num].occupied = false;
+                scrabble_board[board_num].letter = "";
+                display_scoreboard_info();
+            }
         },
         tolerance: "touch"
     });
