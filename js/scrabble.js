@@ -36,7 +36,6 @@ ScrabbleTiles["Y"] = { "value" : 4,  "original-distribution" : 2,  "number-remai
 ScrabbleTiles["Z"] = { "value" : 10, "original-distribution" : 1,  "number-remaining" : 1, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_Z.jpg"  } ;
 ScrabbleTiles["_"] = { "value" : 0,  "original-distribution" : 2,  "number-remaining" : 2, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_Blank.jpg"  } ;
 
-var allTiles = [];
 //data structure for scrabble board heavily based off of examply by Yong Cho 2015
 scrabble_board = [];
 scrabble_board[0] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
@@ -151,7 +150,15 @@ get_random_index = function(min, max){
 
 //handles cleanup of old board and tiles
 clear_board = function(){
-    
+    $(".in_rack").remove();
+    $(".on_board").remove();
+
+    for(i = 0; i < scrabble_board.length; i++) {
+        scrabble_board[i].occupied = false;
+        scrabble_board[i].letter = "";
+    }
+    tile_rack = [];
+
 }
 
 //handles when submit word button is pressed
@@ -163,7 +170,6 @@ submit_word = function(){
     total_score += Number($("#score").text());
     $("#total").text(total_score);
     clear_board();
-    draw_board();
     display_tiles();
     display_scoreboard_info();
 }
@@ -171,13 +177,24 @@ submit_word = function(){
 //clears scoreboard and puts all tiles back into tiles structure
 //displays 7 random tiles in tile rack
 start_over = function(){
+    total_score = 0;
+    $("#total").text(total_score);
+    $("#score").text("0");
+    $("#word").text("");
 
+    for(i = 0; i < Object.keys(ScrabbleTiles).length; i++) {
+        ScrabbleTiles[get_scrabble_tile_index(i)]["number-remaining"] = ScrabbleTiles[get_scrabble_tile_index(i)]["original-distribution"]
+    }
+
+    clear_board();
+    display_tiles();
+    display_scoreboard_info();
 }
 
 
 //displays 8 random tiles
 display_tiles = function(){
-    for(i = 0; i < 8; i++) {
+    for(i = 0; i < 7; i++) {
         do {
         index = get_random_index(0, Object.keys(ScrabbleTiles).length);
         char = get_scrabble_tile_index(index);
@@ -196,7 +213,10 @@ display_tiles = function(){
 
         slot.append(tile);
         tile_rack[i] = {"tile_id": char, "occupied": true};
+        //console.log(get_tiles_remaining())
+        //console.log(ScrabbleTiles[char]["number-remaining"]);
         ScrabbleTiles[char]["number-remaining"]--;
+        console.log(ScrabbleTiles[char]["number-remaining"]);
     }
 }
 

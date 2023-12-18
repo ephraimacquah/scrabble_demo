@@ -38,3 +38,15 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.rack_slot{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.board_slot{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
