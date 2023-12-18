@@ -1,10 +1,4 @@
-/*  File:  /~heines/91.461/91.461-2015-16f/461-assn/Scrabble_Pieces_AssociativeArray_Jesse.js
- *  Jesse M. Heines, UMass Lowell Computer Science, heines@cs.uml.edu
- *  Copyright (c) 2015 by Jesse M. Heines.  All rights reserved.  May be freely 
- *    copied or excerpted for educational purposes with credit to the author.
- *  updated by JMH on November 21, 2015 at 10:27 AM
- *  updated by JMH on November 25, 2015 at 10:58 AM to add the blank tile
- *  updated by JMH on November 27, 2015 at 10:22 AM to add original-distribution
+/* scrabbleTiles data structure from yong cho assignment 9 2015
  */
  
 var ScrabbleTiles = [];
@@ -36,7 +30,7 @@ ScrabbleTiles["Y"] = { "value" : 4,  "original-distribution" : 2,  "number-remai
 ScrabbleTiles["Z"] = { "value" : 10, "original-distribution" : 1,  "number-remaining" : 1, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_Z.jpg"  } ;
 ScrabbleTiles["_"] = { "value" : 0,  "original-distribution" : 2,  "number-remaining" : 2, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_Blank.jpg"  } ;
 
-//data structure for scrabble board heavily based off of examply by Yong Cho 2015
+//data structure for scrabble board heavily based off of assignment 9 example by Yong Cho 2015
 scrabble_board = [];
 scrabble_board[0] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
 scrabble_board[1] = {"letter_double": 1, "word_double": 2, "image": "graphics/double_word_score.png", "occupied": false, "letter": ""};
@@ -50,7 +44,7 @@ scrabble_board[8] = {"letter_double": 1, "word_double": 1, "image": "graphics/de
 scrabble_board[9] = {"letter_double": 1, "word_double": 1, "image": "graphics/double_letter_score.png", "occupied": false, "letter": ""};
 scrabble_board[10] = {"letter_double": 1, "word_double": 1, "image": "graphics/default_board_square.png", "occupied": false, "letter": ""};
 
-//data structure for tile rack
+//data structure for tile rack to be filled by display_tiles()/update_tile_rack()
 tile_rack = []
 
 //global total score
@@ -179,7 +173,6 @@ update_tile_rack = function(){
             break;
         }
         if(tile_rack[j].occupied) {
-            //ScrabbleTiles[tile_rack[j].tile_id]["number-remaining"]
             continue;
         }
         char = get_random_tile();
@@ -219,6 +212,7 @@ submit_word = function(){
         }
     }
     display_scoreboard_info();
+    //displays game over with final score when no more moves can be made
     if(get_tiles_remaining() == 0 && empty_tile_rack) {
         $("#game_over").html("<h2>Game Over</h2><h2>Final Score: " + total_score);
     }
@@ -241,6 +235,7 @@ start_over = function(){
     display_scoreboard_info();
 }
 
+//gets a random tile from total remaining tiles
 get_random_tile = function() {
     var allTiles = [];
     for(key in ScrabbleTiles) {
@@ -252,7 +247,7 @@ get_random_tile = function() {
     return allTiles[index];
 }
 
-//displays 7 random tiles
+//displays 7 random tiles on tile rack
 display_tiles = function(){
     for(i = 0; i < 7; i++) {
         
@@ -298,11 +293,7 @@ draw_board = function() {
 
 
 $().ready(function() {
-    //draws board
-    $(".in_rack").css({"margin": "auto, 5px 0px 5px",
-                        "width": "64px",
-                        "height": "64px"});
-    $(".on_board").css({"margin-top": "20px"})
+    //displays board, tiles, and scoreboard information
     draw_board();    
     display_tiles();
     display_scoreboard_info();
@@ -315,6 +306,7 @@ $().ready(function() {
         },
         drop: function(event, ui){
             index = $(this).attr("id");
+            //drag and drop from board slot to board slot
             if(ui.draggable.hasClass("on_board")) {
                 $(ui.draggable).css("top", "");
                 $(ui.draggable).css("left", "");
@@ -327,6 +319,7 @@ $().ready(function() {
                 scrabble_board[index].letter = id;
                 display_scoreboard_info(); 
             } else {
+                //drag and drop from tile rack to board slot
                 ui.draggable.removeClass("in_rack");
                 ui.draggable.addClass("on_board");
                 $(ui.draggable).css("top", "");
@@ -352,6 +345,7 @@ $().ready(function() {
             return (tile_rack[index - 1].occupied == false);
         }, 
         drop: function(event, ui){
+            //drag and drop from tile rack to tile rack
             index = $(this).attr("id")[4];
             if(ui.draggable.hasClass("in_rack")) {
                 $(ui.draggable).css("top", "");
@@ -365,6 +359,7 @@ $().ready(function() {
                 tile_rack[index].tile_id = id;
                 display_scoreboard_info(); 
             } else {
+                //drag and drop from board slot to tile rack
                 ui.draggable.removeClass("on_board");
                 ui.draggable.addClass("in_rack");
                 $(ui.draggable).css("top", "");
