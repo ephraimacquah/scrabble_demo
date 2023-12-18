@@ -56,9 +56,9 @@ tile_rack = []
 //global total score
 var total_score = 0;
 
-
+//if the letter is a tile on the board, it returns board slot index
 get_board_slot_from_letter = function(letter) {
-    for(i = 0; i < scrabble_board.length; i++) {
+    for(var i = 0; i < scrabble_board.length; i++) {
         if (letter == scrabble_board[i].letter) {
             return i;
         }
@@ -66,8 +66,9 @@ get_board_slot_from_letter = function(letter) {
     return false;
 }
 
+//if the letter is a tile on the rack, it returns rack slot index
 get_rack_slot_from_letter = function(letter) {
-    for(i = 0; i < tile_rack.length; i++) {
+    for(var i = 0; i < tile_rack.length; i++) {
         if (letter == tile_rack[i].tile_id) {
             return i;
         }
@@ -75,11 +76,12 @@ get_rack_slot_from_letter = function(letter) {
     return false;
 }
 
+//gets letter used to index ScrabbleTiles data structure
 get_scrabble_tile_index = function(index){
     var char;
     //code converts from i to actual character and uses evaluated char to index array
     //code snippet from https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/Scrabble_Pieces_AssociativeArray_Jesse_Test.html javascript source
-    if ( index < Object.keys(ScrabbleTiles).length - 1) {
+    if (index < Object.keys(ScrabbleTiles).length - 1) {
         char = String.fromCharCode(65 + index) ;
     } else if ( index < Object.keys(ScrabbleTiles).length) {
         char = "_" ;
@@ -87,9 +89,10 @@ get_scrabble_tile_index = function(index){
     return char;
 }
 
+//returns word that is on the game noard
 get_word = function(){
     var word = "";
-    for(i = 0; i < scrabble_board.length; i++) {
+    for(var i = 0; i < scrabble_board.length; i++) {
         if(scrabble_board[i].letter == "") {
             word += " ";
         } else {
@@ -99,10 +102,11 @@ get_word = function(){
     return word
 }
 
+//returns current score for tiles on game board
 calculate_score = function(word){
-    var score = 0, word_multiply = 1;
+    var score = 0, word_multiply = 1, letter;
     word = word.trim();
-    for(i = 0; i < word.length; i++) {
+    for(var i = 0; i < word.length; i++) {
         if(word[i] == " ") {
             return "-"
         }
@@ -113,9 +117,10 @@ calculate_score = function(word){
     return score * word_multiply;
 }
 
+//returns the number of tiles remaining
 get_tiles_remaining = function(){
-    tr = 0;
-    for(i = 0; i < Object.keys(ScrabbleTiles).length; i++) {
+    var tr = 0, char;
+    for(var i = 0; i < Object.keys(ScrabbleTiles).length; i++) {
         char = get_scrabble_tile_index(i);
         tr += ScrabbleTiles[char]["number-remaining"];
     }
@@ -153,7 +158,7 @@ clear_board = function(){
     $(".in_rack").remove();
     $(".on_board").remove();
 
-    for(i = 0; i < scrabble_board.length; i++) {
+    for(var i = 0; i < scrabble_board.length; i++) {
         scrabble_board[i].occupied = false;
         scrabble_board[i].letter = "";
     }
@@ -161,20 +166,65 @@ clear_board = function(){
 
 }
 
+//clears board and adds new tiles to tile rack
+update_tile_rack = function(){
+    $(".on_board").remove();
+    for(var i = 0; i < scrabble_board.length; i++) {
+        scrabble_board[i].occupied = false;
+        scrabble_board[i].letter = "";
+    }
+
+    for(var j = 0; j < 7; j++) {
+        if(get_tiles_remaining() == 0) {
+            break;
+        }
+        if(tile_rack[j].occupied) {
+            //ScrabbleTiles[tile_rack[j].tile_id]["number-remaining"]
+            continue;
+        }
+        char = get_random_tile();
+        slot = $("#slot" + (j + 1));
+        slot.addClass("rack_slot");
+        slot.css({"width": "90px", "height": "120px", "vertical-align": "middle"})
+        tile = $("<img>", {
+            src: ScrabbleTiles[char]["image"],
+            alt: char + " tile",
+            id: char,
+            class: "in_rack"
+        });
+
+        tile.draggable({revert: "invalid"});
+
+        slot.append(tile);
+        tile_rack[j] = {"tile_id": char, "occupied": true};
+        ScrabbleTiles[char]["number-remaining"]--; 
+    }
+}
+
 //handles when submit word button is pressed
 //removes used tiles from tiles structure and provides 7 new tiles
 submit_word = function(){
+    var empty_tile_rack = true;
     if(calculate_score(get_word()) == "-" || calculate_score(get_word()) == 0) {
         return;
     }
+    
     total_score += Number($("#score").text());
     $("#total").text(total_score);
-    clear_board();
-    display_tiles();
+
+    update_tile_rack();
+    for(var i = 0; i < 7; i++) {
+        if (tile_rack[i].occupied) {
+            empty_tile_rack = false
+        }
+    }
     display_scoreboard_info();
+    if(get_tiles_remaining() == 0 && empty_tile_rack) {
+        $("#game_over").html("<h2>Game Over</h2><h2>Final Score: " + total_score);
+    }
 }
 
-//clears scoreboard and puts all tiles back into tiles structure
+//clears scoreboard and puts all tiles back into tiles structure by resetting number of tiles remaining
 //displays 7 random tiles in tile rack
 start_over = function(){
     total_score = 0;
@@ -191,14 +241,22 @@ start_over = function(){
     display_scoreboard_info();
 }
 
+get_random_tile = function() {
+    var allTiles = [];
+    for(key in ScrabbleTiles) {
+        for(j = 0; j < ScrabbleTiles[key]["number-remaining"]; j++) {
+            allTiles.push(key);
+        }
+    }
+    index = get_random_index(0, allTiles.length);
+    return allTiles[index];
+}
 
-//displays 8 random tiles
+//displays 7 random tiles
 display_tiles = function(){
     for(i = 0; i < 7; i++) {
-        do {
-        index = get_random_index(0, Object.keys(ScrabbleTiles).length);
-        char = get_scrabble_tile_index(index);
-        } while(ScrabbleTiles[char]["number-remaining"] == 0);
+        
+        char = get_random_tile();
         slot = $("#slot" + (i + 1));
         slot.addClass("rack_slot");
         slot.css({"width": "90px", "height": "120px", "vertical-align": "middle"})
@@ -213,13 +271,12 @@ display_tiles = function(){
 
         slot.append(tile);
         tile_rack[i] = {"tile_id": char, "occupied": true};
-        //console.log(get_tiles_remaining())
-        //console.log(ScrabbleTiles[char]["number-remaining"]);
         ScrabbleTiles[char]["number-remaining"]--;
-        console.log(ScrabbleTiles[char]["number-remaining"]);
     }
 }
 
+
+//handles drawing scrabble game board to screen
 draw_board = function() {
     $("#board").css({
         "display": "flex",
@@ -250,6 +307,7 @@ $().ready(function() {
     display_tiles();
     display_scoreboard_info();
 
+    //handles dropping tiles onto the game board
     $(".board_slot").droppable({
         accept: function(){
             index = $(this).attr("id");
@@ -277,6 +335,7 @@ $().ready(function() {
                 id = ui.helper.attr("id");
                 rack_num = get_rack_slot_from_letter(id);
                 tile_rack[rack_num].occupied = false;
+                tile_rack[rack_num].tile_id = "";
                 scrabble_board[index].occupied = true;
                 scrabble_board[index].letter = id;
                 display_scoreboard_info();
@@ -285,6 +344,7 @@ $().ready(function() {
          tolerance: "touch"
     });
     
+    //handles dropping tiles into the rack
     $(".rack_slot").droppable({
         accept: function(){
             index = $(this).attr("id")[4];
@@ -300,9 +360,9 @@ $().ready(function() {
                 $(this).append(ui.draggable);
                 id = ui.helper.attr("id");
                 tile_rack[previous_slot].occupied = false;
-                tile_rack[previous_slot].letter = "";
+                tile_rack[previous_slot].tile_id = "";
                 tile_rack[index].occupied = true;
-                tile_rack[index].letter = id;
+                tile_rack[index].tile_id = id;
                 display_scoreboard_info(); 
             } else {
                 ui.draggable.removeClass("on_board");
@@ -313,6 +373,7 @@ $().ready(function() {
                 id = ui.helper.attr("id");
                 board_num = get_board_slot_from_letter(id)
                 tile_rack[index].occupied = true;
+                tile_rack[index].tile_id = id;
                 scrabble_board[board_num].occupied = false;
                 scrabble_board[board_num].letter = "";
                 display_scoreboard_info();
