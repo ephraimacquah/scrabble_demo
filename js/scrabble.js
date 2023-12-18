@@ -1,6 +1,11 @@
-/* scrabbleTiles data structure from yong cho assignment 9 2015
+/*
+Ephraim Acquah, UMass Lowell Computer Science,
+Ephraim_Acquah@student.uml.edu
+Copyright (c) 2023 by Ephraim Acquah. All rights reserved.
  */
- 
+
+
+/* scrabbleTiles data structure from yong cho assignment 9 2015*/
 var ScrabbleTiles = [];
 ScrabbleTiles["A"] = { "value" : 1,  "original-distribution" : 9,  "number-remaining" : 9, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_A.jpg"  } ;
 ScrabbleTiles["B"] = { "value" : 3,  "original-distribution" : 2,  "number-remaining" : 2, "image": "graphics/Scrabble_Tiles/Scrabble_Tile_B.jpg"  } ;
